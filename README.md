@@ -1,15 +1,17 @@
 # cryptography_demo
-cryptography_v1.0
 
-1. main.py: 主函数
-  
-2. rsa.py: RSA密码实现代码
-  分组加密规则为：加密时取秘钥 n 的字节数减1进行加密，加密后扩展为n的字节数加1个字节；解密时取n.bytesLen+1个字节转换为int进行解密
+# v1.0: 实现了RSA, DES, caesar
 
-3. des.py: DES实现代码
+    1. main.py: 主函数 
+    2. rsa.py: RSA密码实现代码
+    3. des.py: DES实现代码
+    4. caesar.py: 凯撒密码实现代码
+    5. gui.py: 图形化界面的实现
 
-4. caesar.py: 凯撒密码实现代码
+# v2.0: 改进了rsa算法，添加了分组的标准，新增了AES加密标准，改进了一些函数的实现
+    
+    1. aes.py: 实现AES加密标准
+    2. utils.py: 一些常用函数的封装
 
-5. gui.py: 图形化界面的实现
 
-6. utils.py: 常用函数
+
