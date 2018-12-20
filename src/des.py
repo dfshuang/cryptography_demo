@@ -1,5 +1,5 @@
 import os
-from rsa import bytesToInt, intToBytes
+from utils import bytesToInt, intToBytes
 
 class DES():
     def __init__(self):

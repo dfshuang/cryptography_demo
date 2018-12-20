@@ -1,25 +1,15 @@
 import random
 import os
-
-def bytesToInt(bytes):
-    return int(bytes.hex(), base = 16)
-
-def intToBytes(intx):
-    res = []
-    while intx > 0:
-        res.append(intx & 0xff)
-        intx >>= 8
-    res.reverse()
-    return bytes(res)
-
-
-
+from utils import bytesToInt, intToBytes
 
 class RSA():
     def __init__(self):
         self.e, self.d, self.n = self.generate_secret_key()
         nb = self.n.bit_length()
-        self.nB = nb // 8 + (0 if nb % 8 == 0 else 1)
+        self.nBytes = nb // 8 + (0 if nb % 8 == 0 else 1)   #self.n的字节数
+        self.encrypt_packet_length = self.nBytes - 1  # 加密分组长度，n的字节数-1
+        self.decrypt_packet_length = self.nBytes + 1  # 解密分组长度
+
         self.name = 'RSA'
         self.key = 'e: ' + str(self.e) + '\nd: ' + str(self.d) + '\nn: ' + str(self.n)
 
@@ -127,14 +117,34 @@ class RSA():
 
     def encrypt(self, X):
         '''X: str(text), return: str(bytes(1024*n))'''
-        _x = bytesToInt(X.encode())
-        _y = pow(int(_x), self.e, self.n)
-        res = _y.to_bytes(1024, 'big').hex()
+        res = ''  #返回的字符     
+        _x = X.encode()
+        encry_times = len(_x)//self.encrypt_packet_length  #加密次数
+
+        for i in range(encry_times):
+            # 将_x转为int
+            _xi = bytesToInt(_x[i*self.encrypt_packet_length:(i+1)*self.encrypt_packet_length])   
+            # 加密
+            _yi = pow(_xi, self.e, self.n)
+            # 将加密后int转为字符串
+            res += _yi.to_bytes(self.decrypt_packet_length, 'big').hex()
+        
+        # 若还有剩余的为加密的数据则进行最后的加密
+        if len(_x)%self.encrypt_packet_length != 0: 
+            _xi = bytesToInt(_x[encry_times * self.encrypt_packet_length:]) 
+            _yi = pow(_xi, self.e, self.n)
+            res += _yi.to_bytes(self.decrypt_packet_length, 'big').hex()
+
         return res
 
 
     def decrypt(self, X):
         '''X: str(hex), return: str(text)'''
-        _x = pow(int(X,base=16), self.d, self.n)
-        return intToBytes(_x).decode()
+        res = b''        
+        decry_times = len(X)//2//self.decrypt_packet_length   #加密次数即分组数
+        for i in range(decry_times):
+            _xi = int(X[i*self.decrypt_packet_length*2: (i+1)*self.decrypt_packet_length*2], base=16)  # 将16进制的字符串转化为int型
+            _xi = pow(_xi,self.d, self.n)
+            res += intToBytes(_xi)   
+        return res.decode()
 
