@@ -6,6 +6,7 @@ from PyQt5.Qt import QLineEdit
 from rsa import RSA
 from caesar import Caesar
 from des import DES
+from aes import AES
 
 class App(QWidget):
     
@@ -50,12 +51,15 @@ class App(QWidget):
         self.button.append(QPushButton('RSA',self))
         self.button.append(QPushButton('Caesar',self))
         self.button.append(QPushButton('DES', self))
+        self.button.append(QPushButton('AES',self))
 
         self.button[0].move(self.left+self.width//4+100,self.top+5)
         self.button[1].move(self.left+self.width//4+100,self.top+45)
         self.button[2].move(20, 20)
         self.button[3].move(120, 20)
         self.button[4].move(220, 20)
+        self.button[5].move(320, 20)
+
 
         # connect button to function on_click
         self.button[0].clicked.connect(self.on_click0)
@@ -63,6 +67,7 @@ class App(QWidget):
         self.button[2].clicked.connect(self.on_click2)
         self.button[3].clicked.connect(self.on_click3)
         self.button[4].clicked.connect(self.on_click4)
+        self.button[5].clicked.connect(self.on_click5)
         self.show()
 
     @pyqtSlot()
@@ -104,4 +109,10 @@ class App(QWidget):
         self.crypt = DES()
         helpMessage = 'use method: ' + self.crypt.name + '\nkey: \n'
         helpMessage += '\n'.join([str(s.hex()) for s in self.crypt.key])
+        self.textbox[2].setText(helpMessage)
+
+    @pyqtSlot()
+    def on_click5(self):
+        self.crypt = AES()
+        helpMessage = 'use method: ' + self.crypt.name + '\nkey: ' + bytes(self.crypt.key).hex()
         self.textbox[2].setText(helpMessage)

@@ -1,4 +1,5 @@
 
+
 def bytesToInt(bytes):
     return int(bytes.hex(), base = 16)
 
@@ -9,3 +10,8 @@ def intToBytes(intx):
         intx >>= 8
     res.reverse()
     return bytes(res)
+
+def addXor(A, B):
+    '''A, B are list'''
+    return [a^b for a,b in zip(A,B)]
+
